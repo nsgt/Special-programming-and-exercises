@@ -1,0 +1,236 @@
+#include <windows.h>
+#include <tchar.h>
+
+// プロトタイプ宣言
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+// 大域変数
+static TCHAR szWindowClass[] = _T("iphone");
+static TCHAR szTitle[] = _T("iphone");
+HINSTANCE	hInst;
+
+int WINAPI WinMain(HINSTANCE hInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR pCmdLine,
+	int nCmdShow) {
+
+	WNDCLASSEX wcex;
+
+	// ウィンドウクラスの情報を設定
+	wcex.cbSize = sizeof(WNDCLASSEX);				// 構造体サイズ
+	wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;	// スタイル
+	wcex.lpfnWndProc = WndProc;							// ウィンドウプロシージャ
+	wcex.cbClsExtra = 0;									// 拡張情報１
+	wcex.cbWndExtra = 0;									// 拡張情報２
+	wcex.hInstance = hInstance;							// インスタンスハンドル
+	wcex.hIcon = (HICON)LoadImage(					// アイコン
+		NULL,
+		MAKEINTRESOURCE(IDI_APPLICATION),
+		IMAGE_ICON,
+		0,
+		0,
+		LR_DEFAULTSIZE | LR_SHARED
+		);
+	wcex.hIconSm = wcex.hIcon;							// 子アイコン
+	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName = NULL;							// メニュー名
+	wcex.lpszClassName = szWindowClass;
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+
+	// ウィンドウクラスを登録する
+	if (!RegisterClassEx(&wcex)) {
+		MessageBox(NULL,
+			_T("ウィンドウの登録に失敗しました"),
+			_T("ウィンドウの登録エラー"),
+			NULL);
+		return 1;
+	}
+
+	hInst = hInstance; // インスタンス･ハンドルを大域変数に格納
+
+	// ウィンドウを作成する
+	HWND hWnd = CreateWindow(
+		szWindowClass,					// ウィンドウクラス名
+		szTitle,							// タイトルバーに表示する文字列
+		WS_OVERLAPPEDWINDOW,		// ウィンドウの種類
+		100,								// ウィンドウを表示する位置(X座標)
+		100,								// ウィンドウを表示する位置(Y座標)
+		320,								// ウィンドウの幅
+		568,								// ウィンドウの高さ
+		NULL,							// 親ウィンドウのウィンドウハンドル
+		NULL,							// メニューハンドル
+		hInst,							// インスタンスハンドル
+		NULL							// その他の作成データ
+		);
+
+	if (!hWnd) {
+		MessageBox(NULL,
+			_T("ウィンドウの作成に失敗しました"),
+			_T("ウィンドウの作成エラー"),
+			NULL);
+		return 1;
+	}
+
+	// ウィンドウを表示する
+	ShowWindow(hWnd, nCmdShow);
+	UpdateWindow(hWnd);
+
+	// メッセージ･ループ
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return (int)msg.wParam;
+}
+
+// ウィンドウプロシージャ
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	PAINTSTRUCT ps;
+	HBRUSH	hBrush;
+	RECT	rc;
+	int i;
+	int upper = 70;
+	int lower = 114;
+
+	static HBITMAP hBitmap, hPrevBitmap;	// ビットマップのハンドル
+	static HDC hDC, hCompatDC1, hCompatDC2;			// デバイスコンテキストハンドル
+	
+
+	static LPCTSTR TEST_STR1 = _T("Skrillex - first of the year");
+	static LPCTSTR TEST_STR2 = _T("Skrillex - RIGHT IN");
+	static LPCTSTR TEST_STR3 = _T("Skrillex - ALL I ASK OF YOU");
+	static LPCTSTR TEST_STR4 = _T("Skrillex - KYOTO");
+	static LPCTSTR TEST_STR5 = _T("Skrillex & yogi - burial");
+	static LPCTSTR TEST_STR6 = _T("Skrillex - BANGARANG");
+	static LPCTSTR TEST_STR7 = _T("Skrillex - UMF2015 ");
+	static LPCTSTR TEST_STR8 = _T("Skrillex - DirtyVibe ");
+	static LPCTSTR TEST_STR9 = _T("Skrillex - Wild For The Night");
+
+	switch (message) {
+	case WM_PAINT:  // 再描画するタイミング
+		hDC = BeginPaint(hWnd, &ps);		// GDI関数による描画を開始する
+		hBrush = CreateSolidBrush(RGB(192, 192, 255));
+		GetClientRect(hWnd, &rc);
+		SelectObject(hDC, hBrush);
+		Rectangle(hDC, rc.left, rc.top, rc.right, rc.bottom);
+		DeleteObject(hBrush);
+		hBrush = CreateSolidBrush(RGB(255, 255, 255));
+		SelectObject(hDC, hBrush);
+
+		Rectangle(hDC, 1, 1, 310, 55);           //上の図形
+		Rectangle(hDC, 1, 492, 310, 570);     //下の図形
+
+		// ビットマップをウィンドウに転送する(表示する)
+		StretchBlt(hDC, 0, 0, 305, 65, hCompatDC1, 0, 0,310,60, SRCCOPY);      //x座標、y座標、画像の大きさ　の設定
+		StretchBlt(hDC, 0, 493, 315, 35, hCompatDC2, 0, 0, 320, 39, SRCCOPY);
+
+		for (i = 0; i < 9; i++) {
+			Rectangle(hDC, 10, upper, 295, lower);
+			upper = upper + 47;
+			lower = lower + 47;
+
+		}
+
+		TextOut(hDC, 30, 85, TEST_STR1, (int)_tcslen(TEST_STR1));
+		TextOut(hDC, 30, 130, TEST_STR2, (int)_tcslen(TEST_STR2));
+		TextOut(hDC, 30, 179, TEST_STR3, (int)_tcslen(TEST_STR3));
+		TextOut(hDC, 30, 225, TEST_STR4, (int)_tcslen(TEST_STR4));
+		TextOut(hDC, 30, 272, TEST_STR5, (int)_tcslen(TEST_STR5));
+		TextOut(hDC, 30, 319, TEST_STR6, (int)_tcslen(TEST_STR6));
+		TextOut(hDC, 30, 366, TEST_STR7, (int)_tcslen(TEST_STR7));
+		TextOut(hDC, 30, 411, TEST_STR8, (int)_tcslen(TEST_STR8));
+		TextOut(hDC, 30, 459, TEST_STR9, (int)_tcslen(TEST_STR9));
+
+		DeleteObject(hBrush);
+		EndPaint(hWnd, &ps);			// GDI関数による描画を終了する
+		break;
+
+
+
+
+
+		case WM_CREATE:
+			hBitmap = (HBITMAP)LoadImage(
+				NULL,
+				_T("ue.bmp"),
+				IMAGE_BITMAP,
+				0,
+				0,
+				LR_LOADFROMFILE);
+			if (hBitmap == NULL) {
+				MessageBox(
+					hWnd, _T("ビットマップのロードに失敗しました"), _T("エラー"),
+					MB_OK | MB_ICONWARNING
+					);
+				return 0;
+			}
+
+			// ウィンドウのデバイスコンテキストハンドルを取得する
+			hDC = GetDC(hWnd);
+			// メモリデバイスコンテキストを作成する
+			hCompatDC1 = CreateCompatibleDC(hDC);
+			// ロードしたビットマップを選択する
+			hPrevBitmap = (HBITMAP)SelectObject(hCompatDC1, hBitmap);
+			
+
+			hBitmap = (HBITMAP)LoadImage(
+				NULL,
+				_T("sita.bmp"),
+				IMAGE_BITMAP,
+				0,
+				0,
+				LR_LOADFROMFILE);
+			if (hBitmap == NULL) {
+				MessageBox(
+					hWnd, _T("ビットマップのロードに失敗しました"), _T("エラー"),
+					MB_OK | MB_ICONWARNING
+					);
+				return 0;
+			}
+
+			// ウィンドウのデバイスコンテキストハンドルを取得する
+			hDC = GetDC(hWnd);
+			// メモリデバイスコンテキストを作成する
+			hCompatDC2 = CreateCompatibleDC(hDC);
+			// ロードしたビットマップを選択する
+			hPrevBitmap = (HBITMAP)SelectObject(hCompatDC2, hBitmap);
+			break;
+
+
+
+
+
+
+	case WM_DESTROY:   // ウィンドウが破棄されるとき
+		SelectObject(hCompatDC1, hPrevBitmap);	// 以前のビットマップに選択を戻す
+		SelectObject(hCompatDC2, hPrevBitmap);	// 以前のビットマップに選択を戻す
+		DeleteObject(hBitmap);	// ロードしたビットマップを削除する
+		DeleteDC(hCompatDC1);	// メモリデバイスコンテキストを削除する
+		DeleteDC(hCompatDC2);	// メモリデバイスコンテキストを削除する
+		ReleaseDC(hWnd, hDC); 	// ウィンドウのデバイスコンテキストハンドルを解放する
+		PostQuitMessage(0);
+		break;
+
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+		break;
+	}
+	return 0;
+}
+
+/*
+Microsoft Visual Studio
+○開き方
+ファイルから新規作成　プロジェクト
+visual C++ の Win32プロジェクト
+ファイル名を入れてOK
+次へ
+空のプロジェクトのチェックボックスを入れて完了
+
+プロジェクトの新しい項目の追加
+Visual C++ の C++ファイル
+ファイル名を同じにして追加ボタン
+*/

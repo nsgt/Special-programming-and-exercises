@@ -1,0 +1,104 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            BackgroundImage = Properties.Resources.galaxy; 	
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("新しいメッセージはありません。", "Message...");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("今年は2016年です。", "Message...");
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void clock_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void camera_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void picture_Click(object sender, EventArgs e)
+        {
+            
+        }
+        string DIR_PAS;
+        private void memo_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog f = new FolderBrowserDialog();
+            f.ShowNewFolderButton = true;
+            if (f.ShowDialog(this) == DialogResult.OK)
+            {
+                DIR_PAS = f.SelectedPath;
+            }
+            using (System.IO.File.Create(DIR_PAS + @"\testfile.txt")) ; //ファイルに書き込み 
+            System.IO.StreamWriter writer = new System.IO.StreamWriter(DIR_PAS + @"\testfile.txt", true);
+            writer.WriteLine("書き込み");
+            writer.Close();
+        }
+
+        private void email_Click(object sender, EventArgs e)
+        {
+            BackgroundImage = Properties.Resources.planet; 
+        }
+
+        private void safari_Click(object sender, EventArgs e)
+        {
+            BackgroundImage = Properties.Resources.moon; 
+        }
+
+        private void music_Click(object sender, EventArgs e)
+        {
+            BackgroundImage = Properties.Resources.earth10; 
+        }
+    }
+}
